@@ -23,7 +23,7 @@ import { HttpClientModule } from '@angular/common/http';
   ],
   providers: [
     provideBrowserGlobalErrorListeners(),
-    Service
+    Service,
   ],
   bootstrap: [App]
 })

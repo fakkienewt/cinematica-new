@@ -17,7 +17,13 @@
             class="movie-card-horizontal">
             <div class="poster-wrapper">
                 <img [src]="getPosterUrl(movie.poster)"
+                    [alt]="movie.title"
                     class="poster-image">
+                <div class="movie-rating">{{ movie.rating }}</div>
+            </div>
+            <div class="movie-info">
+                <h3 class="movie-title">{{ movie.title }}</h3>
+                <p class="movie-year">{{ movie.year }}</p>
             </div>
         </div>
     </div>
@@ -26,13 +32,118 @@
 <div class="cute-tabs">
     <div class="tabs-scroll">
         <div class="left-tabs">
-            <div class="tab-item active">Фильмы</div>
-            <div class="tab-item">Сериалы</div>
-            <div class="tab-item">Мультфильмы</div>
-            <div class="tab-item">Аниме</div>
+            <div class="tab-item"
+                [class.active]="activeTab === 'films'"
+                (click)="setActiveTab('films')">Фильмы</div>
+            <div class="tab-item"
+                [class.active]="activeTab === 'series'"
+                (click)="setActiveTab('series')">Сериалы</div>
+            <div class="tab-item"
+                [class.active]="activeTab === 'cartoons'"
+                (click)="setActiveTab('cartoons')">Мультфильмы</div>
+            <div class="tab-item"
+                [class.active]="activeTab === 'anime'"
+                (click)="setActiveTab('anime')">Аниме</div>
         </div>
         <div class="right-tabs">
-            <div class="tab-item">Коллекции</div>
+            <div class="tab-item"
+                [class.active]="activeTab === 'news'"
+                (click)="setActiveTab('news')">Новости</div>
         </div>
     </div>
 </div>
+
+<section class="cute-vertical-movies"
+    *ngIf="!loading && !error && activeTab === 'films'">
+    <div class="vertical-grid">
+        <div *ngFor="let film of films"
+            class="movie-card-vertical">
+            <div class="poster-wrapper">
+                <img [src]="getPosterUrlFilm(film.poster)"
+                    [alt]="film.title"
+                    class="poster-image">
+                <div class="movie-rating">{{ film.rating }}</div>
+            </div>
+            <div class="movie-info">
+                <h3 class="movie-title">{{ film.title }}</h3>
+                <p class="movie-year">{{ film.year }}</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="cute-vertical-movies"
+    *ngIf="!loading && !error && activeTab === 'series'">
+    <div class="vertical-grid">
+        <div *ngFor="let series of seriesList"
+            class="movie-card-vertical">
+            <div class="poster-wrapper">
+                <img [src]="getPosterUrlFilm(series.poster)"
+                    [alt]="series.title"
+                    class="poster-image">
+                <div class="movie-rating">{{ series.rating }}</div>
+            </div>
+            <div class="movie-info">
+                <h3 class="movie-title">{{ series.title }}</h3>
+                <p class="movie-year">{{ series.year }}</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="cute-vertical-movies"
+    *ngIf="!loading && !error && activeTab === 'cartoons'">
+    <div class="vertical-grid">
+        <div *ngFor="let cartoon of cartoons"
+            class="movie-card-vertical">
+            <div class="poster-wrapper">
+                <img [src]="getPosterUrlFilm(cartoon.poster)"
+                    [alt]="cartoon.title"
+                    class="poster-image">
+                <div class="movie-rating">{{ cartoon.rating }}</div>
+            </div>
+            <div class="movie-info">
+                <h3 class="movie-title">{{ cartoon.title }}</h3>
+                <p class="movie-year">{{ cartoon.year }}</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="cute-vertical-movies"
+    *ngIf="!loading && !error && activeTab === 'anime'">
+    <div class="vertical-grid">
+        <div *ngFor="let animeItem of anime"
+            class="movie-card-vertical">
+            <div class="poster-wrapper">
+                <img [src]="getPosterUrlFilm(animeItem.poster)"
+                    [alt]="animeItem.title"
+                    class="poster-image">
+                <div class="movie-rating">{{ animeItem.rating }}</div>
+            </div>
+            <div class="movie-info">
+                <h3 class="movie-title">{{ animeItem.title }}</h3>
+                <p class="movie-year">{{ animeItem.year }}</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="cute-vertical-movies"
+    *ngIf="!loading && !error && activeTab === 'collections'">
+    <div class="vertical-grid">
+        <div *ngFor="let collection of collections"
+            class="movie-card-vertical">
+            <div class="poster-wrapper">
+                <img [src]="getPosterUrlFilm(collection.poster)"
+                    [alt]="collection.title"
+                    class="poster-image">
+                <div class="movie-rating">{{ collection.rating }}</div>
+            </div>
+            <div class="movie-info">
+                <h3 class="movie-title">{{ collection.title }}</h3>
+                <p class="movie-year">{{ collection.year }}</p>
+            </div>
+        </div>
+    </div>
+</section>

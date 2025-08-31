@@ -7,5 +7,5 @@ import { Component } from '@angular/core';
   styleUrl: './app.scss'
 })
 export class App {
-  protected title = 'frontend';
+  protected title = 'cinematica';
 }
