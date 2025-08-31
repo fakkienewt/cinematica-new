@@ -1,0 +1,38 @@
+<div class="new-label">НОВИНКИ</div>
+
+<div *ngIf="loading"
+    class="loading">
+    <div class="loading-spinner"></div>
+</div>
+
+<div *ngIf="error"
+    class="error-message">
+    Не удалось загрузить фильмы
+</div>
+
+<section class="cute-horizontal-movies"
+    *ngIf="!loading && !error">
+    <div class="horizontal-scroll">
+        <div *ngFor="let movie of movies"
+            class="movie-card-horizontal">
+            <div class="poster-wrapper">
+                <img [src]="getPosterUrl(movie.poster)"
+                    class="poster-image">
+            </div>
+        </div>
+    </div>
+</section>
+
+<div class="cute-tabs">
+    <div class="tabs-scroll">
+        <div class="left-tabs">
+            <div class="tab-item active">Фильмы</div>
+            <div class="tab-item">Сериалы</div>
+            <div class="tab-item">Мультфильмы</div>
+            <div class="tab-item">Аниме</div>
+        </div>
+        <div class="right-tabs">
+            <div class="tab-item">Коллекции</div>
+        </div>
+    </div>
+</div>
