@@ -1,10 +1,10 @@
-export interface Movie {
+export interface Series {
     index: number;
-    poster: string;
-    url: string;
-    rating: number;
+    poster: string | null;
+    url: string | null;
     title: string;
-    year: number;
+    rating: string;
+    year: string;
     description: string;
     genres: string[];
     countries: string[];
@@ -12,5 +12,7 @@ export interface Movie {
     actors: string[];
     time: string;
     premiere: string;
+    episodes: number;
+    seasons: number;
     script: string[];
 }

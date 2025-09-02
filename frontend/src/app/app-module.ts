@@ -9,6 +9,8 @@ import { Main } from './main/main';
 import { Service } from './services/service';
 import { HttpClientModule } from '@angular/common/http';
 import { Page } from './page/page';
+import { NewsPage } from './news-page/news-page';
+import { SeriesPage } from './series-page/series-page';
 
 @NgModule({
   declarations: [
@@ -16,7 +18,9 @@ import { Page } from './page/page';
     Header,
     Footer,
     Main,
-    Page
+    Page,
+    NewsPage,
+    SeriesPage
   ],
   imports: [
     BrowserModule,

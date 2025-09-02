@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Movie } from '../main/movie.model';
+import { News } from '../models/news.model';
 @Injectable({
     providedIn: 'root'
 })
@@ -28,5 +29,9 @@ export class Service {
 
     getAnime(): Observable<Movie[]> {
         return this.http.get<Movie[]>(`${this.baseUrl}/anime`);
+    }
+
+    getNews(): Observable<News[]> {
+        return this.http.get<News[]>(`${this.baseUrl}/news`)
     }
 }

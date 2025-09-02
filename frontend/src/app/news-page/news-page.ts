@@ -1,16 +1,15 @@
 import { Component, OnInit } from '@angular/core';
-import { Movie } from '../main/movie.model';
+import { News } from '../models/news.model';
 import { Router } from '@angular/router';
 
 @Component({
-  selector: 'app-page',
+  selector: 'app-news-page',
   standalone: false,
-  templateUrl: './page.html',
-  styleUrl: './page.scss'
+  templateUrl: './news-page.html',
+  styleUrl: './news-page.scss'
 })
-export class Page implements OnInit {
-
-  movie: Movie | null = null;
+export class NewsPage implements OnInit {
+  news: News | null = null;
   error: boolean = false;
 
   constructor(
@@ -19,12 +18,13 @@ export class Page implements OnInit {
 
   ngOnInit(): void {
     const navigation = window.history.state;
-    if (navigation && navigation.movie) {
-      this.movie = navigation.movie;
+    if (navigation && navigation.news) {
+      this.news = navigation.news;
     } else {
       this.error = true;
     }
   }
+
 
   getPosterUrl(poster: string | undefined): string {
     if (!poster) return '/assets/default-poster.jpg';

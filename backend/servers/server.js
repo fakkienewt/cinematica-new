@@ -21,6 +21,16 @@ const axiosConfig = {
     }
 };
 
+function filterRussianContent(items) {
+    return items.filter(item => {
+        return !item.countries ||
+            !item.countries.some(country =>
+                country.toLowerCase().includes('россия') ||
+                country.toLowerCase().includes('ссср')
+            );
+    });
+}
+
 async function parseNewMovies() {
     try {
         const url = 'https://w140.zona.plus/';
@@ -47,6 +57,11 @@ async function parseNewMovies() {
             let description = '';
             let genres = [];
             let countries = [];
+            let director = [];
+            let actors = [];
+            let time = '';
+            let premiere = '';
+            let script = [];
 
             if (movieUrl) {
                 try {
@@ -62,6 +77,7 @@ async function parseNewMovies() {
 
                         if (label === 'Жанры') {
                             genres = $item.find('.entity-desc-link-u')
+                                .slice(0, 3)
                                 .map((i, el) => desc$(el).text().trim())
                                 .get();
                         }
@@ -72,6 +88,27 @@ async function parseNewMovies() {
                                 .get();
                         }
                     });
+
+                    director = desc$('.entity-desc-item:contains("Режиссёр") + .entity-desc-value span[itemprop="name"]')
+                        .map((i, el) => desc$(el).text().trim())
+                        .get();
+
+                    actors = desc$('.entity-desc-item:contains("Актёры") + .entity-desc-value span[itemprop="name"]')
+                        .slice(0, 5)
+                        .map((i, el) => desc$(el).text().trim())
+                        .get();
+
+                    time = desc$('.entity-desc-item:contains("Время") + .entity-desc-value time').text().trim();
+
+                    const premiereBlock = desc$('.entity-desc-item:contains("Премьера") + .entity-desc-value');
+                    if (premiereBlock.length) {
+                        const worldPremiere = premiereBlock.find('span').first().text().trim();
+                        premiere = worldPremiere.split('в мире')[0].trim();
+                    }
+
+                    script = desc$('.js-scenarist span[itemprop="name"]')
+                        .map((i, el) => desc$(el).text().trim())
+                        .get();
 
                 } catch (error) {
                     console.log('Ошибка:', error.message);
@@ -87,11 +124,16 @@ async function parseNewMovies() {
                 year: year,
                 description: description,
                 genres: genres,
-                countries: countries
+                countries: countries,
+                director: director,
+                actors: actors,
+                time: time,
+                premiere: premiere,
+                script: script
             });
         }
 
-        return movies;
+        return filterRussianContent(movies);
 
     } catch (error) {
         console.error('Ошибка:', error.message);
@@ -134,6 +176,11 @@ async function parseOnlyFilms() {
             let description = '';
             let genres = [];
             let countries = [];
+            let director = [];
+            let actors = [];
+            let time = '';
+            let premiere = '';
+            let script = [];
 
             if (url) {
                 try {
@@ -143,13 +190,13 @@ async function parseOnlyFilms() {
 
                     description = desc$('.entity-desc-description').text().trim();
 
-
                     desc$('.entity-desc-item-wrap').each((index, item) => {
                         const $item = desc$(item);
                         const label = $item.find('.entity-desc-item').text().trim();
 
                         if (label === 'Жанры') {
                             genres = $item.find('.entity-desc-link-u')
+                                .slice(0, 3)
                                 .map((i, el) => desc$(el).text().trim())
                                 .get();
                         }
@@ -160,6 +207,26 @@ async function parseOnlyFilms() {
                                 .get();
                         }
                     });
+                    director = desc$('.entity-desc-item:contains("Режиссёр") + .entity-desc-value span[itemprop="name"]')
+                        .map((i, el) => desc$(el).text().trim())
+                        .get();
+
+                    actors = desc$('.entity-desc-item:contains("Актёры") + .entity-desc-value span[itemprop="name"]')
+                        .slice(0, 5)
+                        .map((i, el) => desc$(el).text().trim())
+                        .get();
+
+                    time = desc$('.entity-desc-item:contains("Время") + .entity-desc-value time').text().trim();
+
+                    const premiereBlock = desc$('.entity-desc-item:contains("Премьера") + .entity-desc-value');
+                    if (premiereBlock.length) {
+                        const worldPremiere = premiereBlock.find('span').first().text().trim();
+                        premiere = worldPremiere.split('в мире')[0].trim();
+                    }
+
+                    script = desc$('.js-scenarist span[itemprop="name"]')
+                        .map((i, el) => desc$(el).text().trim())
+                        .get();
 
                 } catch (error) {
                     console.log('Ошибка:', error.message);
@@ -175,22 +242,26 @@ async function parseOnlyFilms() {
                 year: year,
                 description: description,
                 genres: genres,
-                countries: countries
+                countries: countries,
+                director: director,
+                actors: actors,
+                time: time,
+                premiere: premiere,
+                script: script
             });
         }
 
-        return films;
+        return filterRussianContent(films);
 
     } catch (error) {
-        console.log('Ошибка в parseOnlyFilms:', error.message);
+        console.log('Ошибка:', error.message);
         throw error;
     }
 }
 
-
 async function parseSeries() {
     try {
-        const url = 'https://w140.zona.plus/movies';
+        const url = 'https://w140.zona.plus/tvseries';
         const response = await axios.get(url, axiosConfig);
         const $ = cheerio.load(response.data);
 
@@ -221,6 +292,13 @@ async function parseSeries() {
             let description = '';
             let genres = [];
             let countries = [];
+            let director = [];
+            let actors = [];
+            let time = '';
+            let premiere = '';
+            let episodes = 0;
+            let seasons = 0;
+            let script = [];
 
             if (url) {
                 try {
@@ -230,7 +308,6 @@ async function parseSeries() {
 
                     description = desc$('.entity-desc-description').text().trim();
 
-
                     desc$('.entity-desc-item-wrap').each((index, item) => {
                         const $item = desc$(item);
                         const label = $item.find('.entity-desc-item').text().trim();
@@ -238,7 +315,8 @@ async function parseSeries() {
                         if (label === 'Жанры') {
                             genres = $item.find('.entity-desc-link-u')
                                 .map((i, el) => desc$(el).text().trim())
-                                .get();
+                                .get()
+                                .slice(0, 4);
                         }
 
                         if (label === 'Страна' || label === 'Страны') {
@@ -247,6 +325,41 @@ async function parseSeries() {
                                 .get();
                         }
                     });
+
+                    director = desc$('.entity-desc-item:contains("Режиссёр") + .entity-desc-value span[itemprop="name"]')
+                        .map((i, el) => desc$(el).text().trim())
+                        .get()
+                        .slice(0, 7);
+
+                    actors = desc$('.entity-desc-item:contains("Актёры") + .entity-desc-value span[itemprop="name"]')
+                        .map((i, el) => desc$(el).text().trim())
+                        .get()
+                        .slice(0, 7);
+
+                    script = desc$('.js-scenarist span[itemprop="name"]')
+                        .map((i, el) => desc$(el).text().trim())
+                        .get()
+                        .slice(0, 7);
+
+                    time = desc$('.entity-desc-item:contains("Время") + .entity-desc-value time').text().trim();
+
+                    const premiereBlock = desc$('.entity-desc-item:contains("Премьера") + .entity-desc-value');
+                    if (premiereBlock.length) {
+                        const worldPremiere = premiereBlock.find('span').first().text().trim();
+                        premiere = worldPremiere.split('в мире')[0].trim();
+                    }
+
+                    seasons = desc$('.entity-season.js-entity-season').length;
+
+                    if (seasons === 0) {
+                        seasons = 1;
+                    }
+
+                    episodes = desc$('.items.episodes.is-entity-page .item').length;
+
+                    if (episodes === 0) {
+                        episodes = desc$('.items.episodes .item').length;
+                    }
 
                 } catch (error) {
                     console.log('Ошибка:', error.message);
@@ -262,11 +375,18 @@ async function parseSeries() {
                 year: year,
                 description: description,
                 genres: genres,
-                countries: countries
+                countries: countries,
+                director: director,
+                actors: actors,
+                time: time,
+                premiere: premiere,
+                episodes: episodes,
+                seasons: seasons,
+                script: script
             });
         }
 
-        return series;
+        return filterRussianContent(series);
 
     } catch (error) {
         console.log('Ошибка:', error.message);
@@ -313,7 +433,7 @@ async function parseCatoons() {
                     const descResponse = await axios.get(fullUrl, axiosConfig);
                     const desc$ = cheerio.load(descResponse.data);
 
-                    description = desc$('.entity-desc-description').text().trim();
+                    description = desc$('.pb-3').text().trim();
 
                     desc$('.entity-desc-item-wrap').each((index, item) => {
                         const $item = desc$(item);
@@ -350,7 +470,7 @@ async function parseCatoons() {
             });
         }
 
-        return cartoons;
+        return filterRussianContent(cartoons);
 
     } catch (error) {
         console.log(error);
@@ -366,8 +486,8 @@ async function parseAnime() {
 
         const anime = [];
 
-        $('.animes-list-item').each((index, elemnt) => {
-            const $el = $(elemnt);
+        $('.animes-list-item').each((index, element) => {
+            const $el = $(element);
 
             const title = $el.find('.h5.font-weight-normal a').text();
             const url = 'https://animego.me' + $el.find('.h5.font-weight-normal a').attr('href');
@@ -403,29 +523,48 @@ async function parseNews() {
 
         const news = [];
 
-        $('.redesign_topic').each((index, element) => {
+        const newsElements = $('.redesign_topic').slice(0, 27);
+
+        for (let index = 0; index < newsElements.length; index++) {
+            const element = newsElements[index];
             const $el = $(element);
 
-            const title = $el.find('strong').attr('a');
-            const url = $el.find('a').attr('href');
-            const poster = $el.find('.wrapper_block_stack var img').attr('src');
-            const when = $el.find('.redesign_topic_main').attr('a').text();
+            const title = $el.find('strong a').text().trim();
+            const newsUrl = $el.find('strong a').attr('href');
+            const poster = $el.find('.wrapper_block_stack img').attr('src');
+            const when = $el.find('.redesign_topic_main').contents().last().text().trim();
+
+            let description = '';
+
+            try {
+                if (newsUrl) {
+                    const fullUrl = `https://www.film.ru${newsUrl}`;
+
+                    const descResponse = await axios.get(fullUrl, axiosConfig);
+                    const desc$ = cheerio.load(descResponse.data);
+
+                    description = desc$('.wrapper_articles_text p').map((i, p) =>
+                        desc$(p).text().trim()
+                    ).get();
+                }
+            } catch (error) {
+                console.log(`Ошибка: ${error.message}`);
+            }
 
             news.push({
                 id: index,
                 title: title,
-                url: url,
-                poster: poster,
-                when: when
+                url: `https://www.film.ru${newsUrl}`,
+                poster: poster ? `https://www.film.ru${poster}` : '',
+                when: when,
+                description: description
             });
-        });
+        }
 
-        console.log(news);
-        return news.slice(0, 28);
-
+        return news;
 
     } catch (error) {
-        console.log(error);
+        console.log('Ошибка:', error);
         throw error;
     }
 }
@@ -435,7 +574,7 @@ app.get('/api/movies', async (req, res) => {
         const movies = await parseNewMovies();
         res.json(movies);
     } catch (error) {
-        res.status(500).json({ error: 'Ошибка при получении новых фильмов' });
+        res.status(500).json({ error: 'Ошибка' });
     }
 });
 
@@ -444,7 +583,7 @@ app.get('/api/only_movies', async (req, res) => {
         const films = await parseOnlyFilms();
         res.json(films);
     } catch (error) {
-        res.status(500).json({ error: 'Ошибка при получении фильмов' });
+        res.status(500).json({ error: 'Ошибка' });
     }
 });
 
@@ -453,7 +592,7 @@ app.get('/api/series', async (req, res) => {
         const series = await parseSeries();
         res.json(series);
     } catch (error) {
-        res.status(500).json({ error: 'Ошибка при получении сериалов' });
+        res.status(500).json({ error: 'Ошибка' });
     }
 });
 
@@ -462,7 +601,7 @@ app.get('/api/cartoons', async (req, res) => {
         const cartoons = await parseCatoons();
         res.json(cartoons);
     } catch (error) {
-        res.status(500).json({ error: 'Ошибка при получении новых фильмов' });
+        res.status(500).json({ error: 'Ошибка' });
     }
 });
 
@@ -471,7 +610,7 @@ app.get('/api/anime', async (req, res) => {
         const anime = await parseAnime();
         res.json(anime);
     } catch (error) {
-        res.status(500).json({ error: 'Ошибка при получении новых фильмов' });
+        res.status(500).json({ error: 'Ошибка' });
     }
 });
 
@@ -480,11 +619,10 @@ app.get('/api/news', async (req, res) => {
         const news = await parseNews();
         res.json(news);
     } catch (error) {
-        res.status(500).json({ error: 'Ошибка при получении новых фильмов' });
+        res.status(500).json({ error: 'Ошибка' });
     }
 });
 
 app.listen(PORT, () => {
     console.log(`Сервер запущен на порту ${PORT}`);
 });
-

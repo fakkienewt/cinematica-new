@@ -8,154 +8,205 @@
                 <div class="soft-title-container">
                     <h1 class="soft-title">{{ movie?.title }}</h1>
                 </div>
-
-                <div class="soft-stats-actions">
-                    <div class="soft-stats">
-                        <div class="soft-stat">
-                            <div class="soft-stat-icon">
-                                <svg width="24"
-                                    height="24"
-                                    viewBox="0 0 24 24"
-                                    fill="none">
-                                    <path
-                                        d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"
-                                        fill="#FFD1DC"
-                                        stroke="#FFB6C1"
-                                        stroke-width="1.5" />
-                                </svg>
-                            </div>
-                            <div class="soft-stat-content">
-                                <div class="soft-stat-label">Рейтинг</div>
-                                <div class="soft-stat-value"> {{ movie?.rating || 'ещё нет' }}</div>
-                            </div>
-                        </div>
-
-                        <div class="soft-stat">
-                            <div class="soft-stat-icon">
-                                <svg width="24"
-                                    height="24"
-                                    viewBox="0 0 24 24"
-                                    fill="none">
-                                    <rect x="3"
-                                        y="6"
-                                        width="18"
-                                        height="15"
-                                        rx="2"
-                                        stroke="#FFB6C1"
-                                        stroke-width="1.5" />
-                                    <path
-                                        d="M3 10C3 8.11438 3 7.17157 3.58579 6.58579C4.17157 6 5.11438 6 7 6H17C18.8856 6 19.8284 6 20.4142 6.58579C21 7.17157 21 8.11438 21 10H3Z"
-                                        fill="#FFE4E9" />
-                                    <path d="M7 3L7 6"
-                                        stroke="#FFB6C1"
-                                        stroke-width="1.5"
-                                        stroke-linecap="round" />
-                                    <path d="M17 3L17 6"
-                                        stroke="#FFB6C1"
-                                        stroke-width="1.5"
-                                        stroke-linecap="round" />
-                                </svg>
-                            </div>
-                            <div class="soft-stat-content">
-                                <div class="soft-stat-label">Год</div>
-                                <div class="soft-stat-value"> {{ movie?.year || 'неизвестен' }}</div>
-                            </div>
-                        </div>
+                <div class="soft-cast-director-info">
+                    <div class="soft-cast-item">
+                        <span class="soft-cast-label">Режиссер:</span>
+                        <span class="soft-cast-value">{{ movie?.director?.join(', ') }}</span>
                     </div>
-
-                    <div class="soft-actions">
-                        <div class="soft-action-btn">
-                            <div class="soft-action-icon">
-                                <svg width="24"
-                                    height="24"
-                                    viewBox="0 0 24 24"
-                                    fill="none">
-                                    <path
-                                        d="M12 21.35L10.55 20.03C5.4 15.36 2 12.28 2 8.5C2 5.42 4.42 3 7.5 3C9.24 3 10.91 3.81 12 5.09C13.09 3.81 14.76 3 16.5 3C19.58 3 22 5.42 22 8.5C22 12.28 18.6 15.36 13.45 20.04L12 21.35Z"
-                                        fill="#FFD1DC"
-                                        stroke="#FFB6C1"
-                                        stroke-width="1.5" />
-                                </svg>
-                            </div>
-                            <div class="soft-action-text">В избранное</div>
-                        </div>
-
-                        <div class="soft-action-btn">
-                            <div class="soft-action-icon">
-                                <svg width="24"
-                                    height="24"
-                                    viewBox="0 0 24 24"
-                                    fill="none">
-                                    <path
-                                        d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z"
-                                        stroke="#FFB6C1"
-                                        stroke-width="1.5" />
-                                    <path d="M12 6V12L16 14"
-                                        stroke="#FFB6C1"
-                                        stroke-width="1.5"
-                                        stroke-linecap="round" />
-                                </svg>
-                            </div>
-                            <div class="soft-action-text">Смотреть позже</div>
-                        </div>
+                    <div class="soft-cast-item">
+                        <span class="soft-cast-label">Сценарий:</span>
+                        <span class="soft-cast-value">{{ movie?.script?.join(', ') }}</span>
+                    </div>
+                    <div class="soft-cast-item">
+                        <span class="soft-cast-label">Актёры:</span>
+                        <span class="soft-cast-value">{{ movie?.actors?.join(', ') }}</span>
                     </div>
                 </div>
 
-                <div class="soft-extra-space">
-                    <div class="soft-details">
-                        <div class="soft-detail-section">
-                            <h3 class="soft-detail-title">Жанры</h3>
-                            <div class="soft-detail-group">
-                                <div class="soft-tags">
-                                    <span *ngFor="let genre of genres"
-                                        class="soft-tag">{{ genre }}</span>
-                                    <span *ngIf="!genres.length"
-                                        class="soft-tag empty">не указаны</span>
-                                </div>
-                            </div>
-                        </div>
+                <div class="soft-action-buttons">
+                    <button class="soft-watch-btn">
+                        <svg width="20"
+                            height="20"
+                            viewBox="0 0 24 24"
+                            fill="none">
+                            <path d="M10 8L16 12L10 16V8Z"
+                                fill="white"
+                                stroke="white"
+                                stroke-width="2"
+                                stroke-linejoin="round" />
+                        </svg>
+                        Смотреть онлайн
+                    </button>
 
-                        <div class="soft-detail-section">
-                            <h3 class="soft-detail-title">Страны</h3>
-                            <div class="soft-detail-group">
-                                <div class="soft-tags">
-                                    <span *ngFor="let country of countries"
-                                        class="soft-tag">{{ country }}</span>
-                                    <span *ngIf="!countries.length"
-                                        class="soft-tag empty">не указаны</span>
-                                </div>
-                            </div>
-                        </div>
+                    <button class="soft-fav-btn">
+                        <svg width="20"
+                            height="20"
+                            viewBox="0 0 24 24"
+                            fill="none">
+                            <path
+                                d="M12 21.35L10.55 20.03C5.4 15.36 2 12.28 2 8.5C2 5.42 4.42 3 7.5 3C9.24 3 10.91 3.81 12 5.09C13.09 3.81 14.76 3 16.5 3C19.58 3 22 5.42 22 8.5C22 12.28 18.6 15.36 13.45 20.04L12 21.35Z"
+                                fill="none"
+                                stroke="#ff85a2"
+                                stroke-width="1.5" />
+                        </svg>
+                    </button>
+
+                    <button class="soft-later-btn">
+                        <svg width="20"
+                            height="20"
+                            viewBox="0 0 24 24"
+                            fill="none">
+                            <path
+                                d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z"
+                                stroke="#ff85a2"
+                                stroke-width="1.5" />
+                            <path d="M12 6V12L16 14"
+                                stroke="#ff85a2"
+                                stroke-width="1.5"
+                                stroke-linecap="round" />
+                        </svg>
+                    </button>
+                </div>
+
+                <div class="soft-details-grid">
+                    <div class="soft-detail-item">
+                        <span class="soft-detail-label">Год:</span>
+                        <span class="soft-detail-value">{{ movie?.year }}</span>
+                    </div>
+                    <div class="soft-detail-item">
+                        <span class="soft-detail-label">Страна:</span>
+                        <span class="soft-detail-value">{{ movie?.countries?.join(', ') }}</span>
+                    </div>
+                    <div class="soft-detail-item">
+                        <span class="soft-detail-label">Жанр:</span>
+                        <span class="soft-detail-value">{{ movie?.genres?.join(', ') }}</span>
+                    </div>
+                    <div class="soft-detail-item">
+                        <span class="soft-detail-label">Время:</span>
+                        <span class="soft-detail-value">{{ movie?.time }}</span>
+                    </div>
+                    <div class="soft-detail-item">
+                        <span class="soft-detail-label">Премьера:</span>
+                        <span class="soft-detail-value">{{ movie?.premiere }}</span>
+                    </div>
+                    <div class="soft-detail-item">
+                        <span class="soft-detail-label">Рейтинг:</span>
+                        <span class="soft-meta-item">{{ movie?.rating }}</span>
                     </div>
                 </div>
             </div>
         </div>
 
-        <div class="soft-description">
-            <h3 class="soft-description-heading">Описание</h3>
+        <div class="soft-description-section">
+            <h3 class="soft-section-title">Описание</h3>
             <p class="soft-description-text">
-                {{ movie?.description || 'Скоро здесь появится описание фильма...' }}
+                {{ movie?.description }}
             </p>
         </div>
     </div>
 
-    <div class="soft-video-section">
-        <div class="soft-video-placeholder">
-            <div class="soft-placeholder-icon">
-                <svg width="48"
-                    height="48"
-                    viewBox="0 0 24 24"
-                    fill="none">
-                    <path
-                        d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z"
-                        stroke="#FFD1DC"
-                        stroke-width="1.5" />
-                    <path d="M10 8L16 12L10 16V8Z"
-                        fill="#FFE4E9"
-                        stroke="#FFB6C1"
-                        stroke-width="1.5"
-                        stroke-linejoin="round" />
-                </svg>
+    <div class="soft-player-section">
+        <div class="soft-player-header">
+            <h3 class="soft-section-title">Смотреть онлайн</h3>
+            <div class="soft-player-controls">
+                <div class="soft-quality-selector">
+                    <span>Качество:</span>
+                    <select>
+                        <option>Full HD</option>
+                        <option>HD</option>
+                        <option>SD</option>
+                    </select>
+                </div>
+                <div class="soft-audio-selector">
+                    <span>Озвучка:</span>
+                    <select>
+                        <option>Оригинал</option>
+                        <option>Русская</option>
+                        <option>Дублированная</option>
+                    </select>
+                </div>
+                <div class="soft-subtitle-selector">
+                    <span>Субтитры:</span>
+                    <select>
+                        <option>Русские</option>
+                        <option>Английские</option>
+                        <option>Отсутствуют</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <div class="soft-video-player">
+            <div class="soft-video-placeholder">
+                <div class="soft-play-icon">
+                    <svg width="48"
+                        height="48"
+                        viewBox="0 0 24 24"
+                        fill="none">
+                        <path
+                            d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z"
+                            stroke="#FFD1DC"
+                            stroke-width="1.5" />
+                        <path d="M10 8L16 12L10 16V8Z"
+                            fill="#FFE4E9"
+                            stroke="#FFB6C1"
+                            stroke-width="1.5"
+                            stroke-linejoin="round" />
+                    </svg>
+                </div>
+                <p class="soft-placeholder-text">Нажмите для начала просмотра</p>
+            </div>
+        </div>
+
+        <div class="soft-similar-section">
+            <h3 class="soft-section-title">Похожие фильмы</h3>
+            <div class="soft-similar-grid">
+                <div class="soft-similar-item">
+                    <div class="soft-similar-poster"></div>
+                    <div class="soft-similar-title">Интерстеллар</div>
+                    <div class="soft-similar-rating">8.6</div>
+                </div>
+                <div class="soft-similar-item">
+                    <div class="soft-similar-poster"></div>
+                    <div class="soft-similar-title">Остров проклятых</div>
+                    <div class="soft-similar-rating">8.3</div>
+                </div>
+                <div class="soft-similar-item">
+                    <div class="soft-similar-poster"></div>
+                    <div class="soft-similar-title">Дюнкерк</div>
+                    <div class="soft-similar-rating">7.9</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="soft-comments-section">
+        <h3 class="soft-section-title">Комментарии</h3>
+        <div class="soft-comments-container">
+            <div class="soft-comment-form">
+                <textarea placeholder="Оставьте ваш комментарий..."
+                    class="soft-comment-input"></textarea>
+                <button class="soft-comment-submit">Отправить</button>
+            </div>
+            <div class="soft-comments-list">
+                <div class="soft-comment">
+                    <div class="soft-comment-avatar"></div>
+                    <div class="soft-comment-content">
+                        <div class="soft-comment-author">Алексей Петров</div>
+                        <div class="soft-comment-text">Отличный фильм! Смотрел уже три раза, и каждый раз нахожу что-то
+                            новое.</div>
+                        <div class="soft-comment-meta">2 часа назад • Оценка: 9/10</div>
+                    </div>
+                </div>
+                <div class="soft-comment">
+                    <div class="soft-comment-avatar"></div>
+                    <div class="soft-comment-content">
+                        <div class="soft-comment-author">Мария Иванова</div>
+                        <div class="soft-comment-text">Визуальные эффекты просто потрясающие, но сюжет немного
+                            предсказуем.</div>
+                        <div class="soft-comment-meta">5 часов назад • Оценка: 7/10</div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

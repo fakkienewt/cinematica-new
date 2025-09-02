@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Movie } from './movie.model';
 import { Service } from '../services/service';
 import { Router } from '@angular/router';
+import { News } from '../models/news.model';
 
 @Component({
   selector: 'app-main',
@@ -15,7 +16,7 @@ export class Main implements OnInit {
   seriesList: Movie[] = [];
   cartoons: Movie[] = [];
   anime: Movie[] = [];
-  collections: Movie[] = [];
+  news: News[] = [];
 
   error = false;
   loading = true;
@@ -66,7 +67,7 @@ export class Main implements OnInit {
         this.loading = false;
       },
       error: (error: any) => {
-        console.log('Ошибка загрузки:', error);
+        console.log('Ошибка:', error);
         this.loading = false;
         this.error = true;
       }
@@ -80,7 +81,7 @@ export class Main implements OnInit {
         this.loading = false;
       },
       error: (error: any) => {
-        console.log('Ошибка загрузки:', error);
+        console.log('Ошибка:', error);
         this.error = true;
         this.loading = false;
       }
@@ -94,7 +95,7 @@ export class Main implements OnInit {
         this.loading = false;
       },
       error: (error: any) => {
-        console.log('Ошибка загрузки:', error);
+        console.log('Ошибка:', error);
         this.error = true;
         this.loading = false;
       }
@@ -108,7 +109,7 @@ export class Main implements OnInit {
         this.loading = false;
       },
       error: (error: any) => {
-        console.log('Ошибка загрузки:', error);
+        console.log('Ошибка:', error);
         this.error = true;
         this.loading = false;
       }
@@ -122,7 +123,7 @@ export class Main implements OnInit {
         this.loading = false;
       },
       error: (error: any) => {
-        console.log('Ошибка загрузки аниме:', error);
+        console.log('Ошибка:', error);
         this.error = true;
         this.loading = false;
       }
@@ -130,8 +131,17 @@ export class Main implements OnInit {
   }
 
   loadNews(): void {
-    this.collections = [];
-    this.loading = false;
+    this.filmService.getNews().subscribe({
+      next: (data: News[]) => {
+        this.news = data;
+        this.loading = false;;
+      },
+      error: (error: any) => {
+        console.log('Ошибка:', error);
+        this.error = true;
+        this.loading = false;
+      }
+    });
   }
 
   getPosterUrl(poster: string): string {
@@ -160,13 +170,23 @@ export class Main implements OnInit {
 
   onClickPageSeries(series: Movie) {
     this.router.navigate([`series/${series.index}`], {
-      state: { movie: series }
+      state: { series: series }
     });
   }
 
   onClickPageCartoons(cartoon: Movie) {
     this.router.navigate([`cartoons/${cartoon.index}`], {
-      state: { movie: cartoon}
+      state: { movie: cartoon }
+    });
+  }
+  onClickPageAnime(anime: Movie) {
+    this.router.navigate([`anime/${anime.index}`], {
+      state: { movie: anime }
+    });
+  }
+  onClickPageNews(n: News) {
+    this.router.navigate([`news/${n.id}`], {
+      state: { news: n}
     });
   }
 }

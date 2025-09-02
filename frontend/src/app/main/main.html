@@ -117,9 +117,9 @@
     <div class="vertical-grid">
         <div *ngFor="let animeItem of anime"
             class="movie-card-vertical">
-            <div class="poster-wrapper">
+            <div class="poster-wrapper"
+                (click)="onClickPageAnime(animeItem)">
                 <img [src]="getPosterUrlFilm(animeItem.poster)"
-                    [alt]="animeItem.title"
                     class="poster-image">
                 <div class="movie-rating">{{ animeItem.rating }}</div>
             </div>
@@ -131,20 +131,18 @@
     </div>
 </section>
 
-<section class="cute-vertical-movies"
-    *ngIf="!loading && !error && activeTab === 'collections'">
-    <div class="vertical-grid">
-        <div *ngFor="let collection of collections"
-            class="movie-card-vertical">
-            <div class="poster-wrapper">
-                <img [src]="getPosterUrlFilm(collection.poster)"
-                    [alt]="collection.title"
-                    class="poster-image">
-                <div class="movie-rating">{{ collection.rating }}</div>
+<section class="cute-news"
+    *ngIf="!loading && !error && activeTab === 'news'">
+    <div class="news-grid">
+        <div *ngFor="let n of news"
+            class="news-card">
+            <div class="news-poster-wrapper" (click)="onClickPageNews(n)">
+                <img [src]="getPosterUrlFilm(n.poster)"
+                    class="news-poster-image">
             </div>
-            <div class="movie-info">
-                <h3 class="movie-title">{{ collection.title }}</h3>
-                <p class="movie-year">{{ collection.year }}</p>
+            <div class="news-info">
+                <h3 class="news-title">{{ n.title }}</h3>
+                <p class="news-date">{{ n.when }}</p>
             </div>
         </div>
     </div>
