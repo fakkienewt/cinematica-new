@@ -28,7 +28,10 @@ async function parseNewMovies() {
         const $ = cheerio.load(response.data);
         const movies = [];
 
-        $('.popularMovies .item').each((index, element) => {
+        const items = $('.popularMovies .item').slice(0, 6);
+
+        for (let i = 0; i < items.length; i++) {
+            const element = items[i];
             const $el = $(element);
 
             const poster = $el.find('.cover').css('background-image');
@@ -41,19 +44,57 @@ async function parseNewMovies() {
             const yearText = $el.find('.year').text().trim();
             const year = yearText ? parseInt(yearText) : 2025;
 
+            let description = '';
+            let genres = [];
+            let countries = [];
+
+            if (movieUrl) {
+                try {
+                    const fullUrl = `https://w140.zona.plus${movieUrl}`;
+                    const descResponse = await axios.get(fullUrl, axiosConfig);
+                    const desc$ = cheerio.load(descResponse.data);
+
+                    description = desc$('.entity-desc-description').text().trim();
+
+                    desc$('.entity-desc-item-wrap').each((index, item) => {
+                        const $item = desc$(item);
+                        const label = $item.find('.entity-desc-item').text().trim();
+
+                        if (label === 'Жанры') {
+                            genres = $item.find('.entity-desc-link-u')
+                                .map((i, el) => desc$(el).text().trim())
+                                .get();
+                        }
+
+                        if (label === 'Страна' || label === 'Страны') {
+                            countries = $item.find('.entity-desc-link-u')
+                                .map((i, el) => desc$(el).text().trim())
+                                .get();
+                        }
+                    });
+
+                } catch (error) {
+                    console.log('Ошибка:', error.message);
+                }
+            }
+
             movies.push({
-                index: index,
+                index: i,
                 poster: poster,
                 url: movieUrl ? `https://w140.zona.plus${movieUrl}` : null,
                 title: title,
                 rating: rating,
-                year: year
+                year: year,
+                description: description,
+                genres: genres,
+                countries: countries
             });
-        });
-        return movies.slice(0, 6);
+        }
+
+        return movies;
 
     } catch (error) {
-        console.error('Ошибка новых фильмов:', error.message);
+        console.error('Ошибка:', error.message);
         throw error;
     }
 }
@@ -65,7 +106,10 @@ async function parseOnlyFilms() {
         const $ = cheerio.load(response.data);
         const films = [];
 
-        $('.results-item-wrap').each((index, element) => {
+        const items = $('.results-item-wrap').slice(0, 28);
+
+        for (let i = 0; i < items.length; i++) {
+            const element = items[i];
             const $el = $(element);
 
             const title = $el.find('.results-item-title').text().trim();
@@ -81,39 +125,85 @@ async function parseOnlyFilms() {
                 }
             }
 
-            const rating = $el.find('.results-item-rating span').text().trim();
-            const year = $el.find('.results-item-year').text().trim();
+            const ratingText = $el.find('.results-item-rating span').text().trim();
+            const rating = ratingText ? parseFloat(ratingText) : 0;
+
+            const yearText = $el.find('.results-item-year').text().trim();
+            const year = yearText ? parseInt(yearText) : 2025;
+
+            let description = '';
+            let genres = [];
+            let countries = [];
+
+            if (url) {
+                try {
+                    const fullUrl = `https://w140.zona.plus${url}`;
+                    const descResponse = await axios.get(fullUrl, axiosConfig);
+                    const desc$ = cheerio.load(descResponse.data);
+
+                    description = desc$('.entity-desc-description').text().trim();
+
+
+                    desc$('.entity-desc-item-wrap').each((index, item) => {
+                        const $item = desc$(item);
+                        const label = $item.find('.entity-desc-item').text().trim();
+
+                        if (label === 'Жанры') {
+                            genres = $item.find('.entity-desc-link-u')
+                                .map((i, el) => desc$(el).text().trim())
+                                .get();
+                        }
+
+                        if (label === 'Страна' || label === 'Страны') {
+                            countries = $item.find('.entity-desc-link-u')
+                                .map((i, el) => desc$(el).text().trim())
+                                .get();
+                        }
+                    });
+
+                } catch (error) {
+                    console.log('Ошибка:', error.message);
+                }
+            }
 
             films.push({
-                index: index,
-                title: title,
-                url: url ? `https://w140.zona.plus${url}` : null,
+                index: i,
                 poster: poster,
-                rating: rating || '',
-                year: year || ''
+                url: url ? `https://w140.zona.plus${url}` : null,
+                title: title,
+                rating: rating,
+                year: year,
+                description: description,
+                genres: genres,
+                countries: countries
             });
-        });
+        }
 
-        console.log('Распарсено фильмов:', films.length);
-        return films.slice(0, 28);
+        return films;
+
     } catch (error) {
-        console.error('Ошибка фильмов:', error.message);
+        console.log('Ошибка в parseOnlyFilms:', error.message);
         throw error;
     }
 }
 
+
 async function parseSeries() {
     try {
-        const url = 'https://w140.zona.plus/tvseries';
+        const url = 'https://w140.zona.plus/movies';
         const response = await axios.get(url, axiosConfig);
         const $ = cheerio.load(response.data);
+
         const series = [];
 
-        $('.results-item-wrap').each((index, element) => {
+        const items = $('.results-item-wrap').slice(0, 28);
+
+        for (let i = 0; i < items.length; i++) {
+            const element = items[i];
             const $el = $(element);
 
             const title = $el.find('.results-item-title').text();
-            let url = $el.find('.results-item').attr('href');
+            const url = $el.find('.results-item').attr('href');
 
             const posterStyle = $el.find('.result-item-preview').css('background-image');
             let poster = null;
@@ -128,21 +218,58 @@ async function parseSeries() {
             const rating = $el.find('.results-item-rating span').text();
             const year = $el.find('.results-item-year').text();
 
-            series.push({
-                index: index,
-                title: title,
-                url: url ? `https://w140.zona.plus${url}` : null,
-                poster: poster,
-                rating: rating || '',
-                year: year || ''
-            });
-        });
+            let description = '';
+            let genres = [];
+            let countries = [];
 
-        console.log('Найдено сериалов:', series.length);
-        return series.slice(0, 28);
+            if (url) {
+                try {
+                    const fullUrl = `https://w140.zona.plus${url}`;
+                    const descResponse = await axios.get(fullUrl, axiosConfig);
+                    const desc$ = cheerio.load(descResponse.data);
+
+                    description = desc$('.entity-desc-description').text().trim();
+
+
+                    desc$('.entity-desc-item-wrap').each((index, item) => {
+                        const $item = desc$(item);
+                        const label = $item.find('.entity-desc-item').text().trim();
+
+                        if (label === 'Жанры') {
+                            genres = $item.find('.entity-desc-link-u')
+                                .map((i, el) => desc$(el).text().trim())
+                                .get();
+                        }
+
+                        if (label === 'Страна' || label === 'Страны') {
+                            countries = $item.find('.entity-desc-link-u')
+                                .map((i, el) => desc$(el).text().trim())
+                                .get();
+                        }
+                    });
+
+                } catch (error) {
+                    console.log('Ошибка:', error.message);
+                }
+            }
+
+            series.push({
+                index: i,
+                poster: poster,
+                url: url ? `https://w140.zona.plus${url}` : null,
+                title: title,
+                rating: rating,
+                year: year,
+                description: description,
+                genres: genres,
+                countries: countries
+            });
+        }
+
+        return series;
 
     } catch (error) {
-        console.error('Ошибка сериалов:', error.message);
+        console.log('Ошибка:', error.message);
         throw error;
     }
 }
@@ -155,7 +282,10 @@ async function parseCatoons() {
 
         const cartoons = [];
 
-        $('.results-item-wrap').each((index, element) => {
+        const items = $('.results-item-wrap').slice(0, 28);
+
+        for (let i = 0; i < items.length; i++) {
+            const element = items[i];
             const $el = $(element);
 
             const title = $el.find('.results-item-title').text();
@@ -173,18 +303,54 @@ async function parseCatoons() {
             const rating = $el.find('.results-item-rating span').text();
             const year = $el.find('.results-item-year').text();
 
-            cartoons.push({
-                index: index,
-                title: title,
-                url: url ? `https://w140.zona.plus${url}` : null,
-                poster: poster,
-                rating: rating || '',
-                year: year || ''
-            });
-        });
+            let description = '';
+            let genres = [];
+            let countries = [];
 
-        console.log('Найдено сериалов:', cartoons.length);
-        return cartoons.slice(0, 28);
+            if (url) {
+                try {
+                    const fullUrl = `https://w140.zona.plus${url}`;
+                    const descResponse = await axios.get(fullUrl, axiosConfig);
+                    const desc$ = cheerio.load(descResponse.data);
+
+                    description = desc$('.entity-desc-description').text().trim();
+
+                    desc$('.entity-desc-item-wrap').each((index, item) => {
+                        const $item = desc$(item);
+                        const label = $item.find('.entity-desc-item').text().trim();
+
+                        if (label === 'Жанры') {
+                            genres = $item.find('.entity-desc-link-u')
+                                .map((i, el) => desc$(el).text().trim())
+                                .get();
+                        }
+
+                        if (label === 'Страна' || label === 'Страны') {
+                            countries = $item.find('.entity-desc-link-u')
+                                .map((i, el) => desc$(el).text().trim())
+                                .get();
+                        }
+                    });
+
+                } catch (error) {
+                    console.log('Ошибка:', error.message);
+                }
+            }
+
+            cartoons.push({
+                index: i,
+                poster: poster,
+                url: url ? `https://w140.zona.plus${url}` : null,
+                title: title,
+                rating: rating,
+                year: year,
+                description: description,
+                genres: genres,
+                countries: countries
+            });
+        }
+
+        return cartoons;
 
     } catch (error) {
         console.log(error);
@@ -208,6 +374,7 @@ async function parseAnime() {
             const poster = $el.find('.anime-list-lazy').attr('data-original');
             const rating = $el.find('.p-rate-flag__text').text().trim();
             const year = $el.find('.anime-year a').text().trim();
+            const description = $el.find('.description').text();
 
             anime.push({
                 id: index,
@@ -215,12 +382,11 @@ async function parseAnime() {
                 url: url,
                 poster: poster,
                 rating: rating,
-                year: year
-            })
+                year: year,
+                description: description
+            });
         });
 
-        console.log(anime);
-        console.log('Найдено аниме:', anime.length);
         return anime.slice(0, 28);
 
     } catch (error) {
@@ -255,7 +421,6 @@ async function parseNews() {
         });
 
         console.log(news);
-        console.log('Найдено новостей:', news.length); 
         return news.slice(0, 28);
 
 
@@ -322,3 +487,4 @@ app.get('/api/news', async (req, res) => {
 app.listen(PORT, () => {
     console.log(`Сервер запущен на порту ${PORT}`);
 });
+

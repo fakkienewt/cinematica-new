@@ -8,13 +8,15 @@ import { Footer } from './footer/footer';
 import { Main } from './main/main';
 import { Service } from './services/service';
 import { HttpClientModule } from '@angular/common/http';
+import { Page } from './page/page';
 
 @NgModule({
   declarations: [
     App,
     Header,
     Footer,
-    Main
+    Main,
+    Page
   ],
   imports: [
     BrowserModule,

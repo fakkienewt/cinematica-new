@@ -15,14 +15,14 @@
     <div class="horizontal-scroll">
         <div *ngFor="let movie of movies"
             class="movie-card-horizontal">
-            <div class="poster-wrapper">
+            <div class="poster-wrapper"
+                (click)="onClickPage(movie)">
                 <img [src]="getPosterUrl(movie.poster)"
                     [alt]="movie.title"
                     class="poster-image">
                 <div class="movie-rating">{{ movie.rating }}</div>
             </div>
             <div class="movie-info">
-                <h3 class="movie-title">{{ movie.title }}</h3>
                 <p class="movie-year">{{ movie.year }}</p>
             </div>
         </div>
@@ -58,7 +58,8 @@
     <div class="vertical-grid">
         <div *ngFor="let film of films"
             class="movie-card-vertical">
-            <div class="poster-wrapper">
+            <div class="poster-wrapper"
+                (click)="onClickPageFilm(film)">
                 <img [src]="getPosterUrlFilm(film.poster)"
                     [alt]="film.title"
                     class="poster-image">
@@ -77,9 +78,9 @@
     <div class="vertical-grid">
         <div *ngFor="let series of seriesList"
             class="movie-card-vertical">
-            <div class="poster-wrapper">
+            <div class="poster-wrapper"
+                (click)="onClickPageSeries(series)">
                 <img [src]="getPosterUrlFilm(series.poster)"
-                    [alt]="series.title"
                     class="poster-image">
                 <div class="movie-rating">{{ series.rating }}</div>
             </div>
@@ -96,7 +97,8 @@
     <div class="vertical-grid">
         <div *ngFor="let cartoon of cartoons"
             class="movie-card-vertical">
-            <div class="poster-wrapper">
+            <div class="poster-wrapper"
+                (click)="onClickPageCartoons(cartoon)">
                 <img [src]="getPosterUrlFilm(cartoon.poster)"
                     [alt]="cartoon.title"
                     class="poster-image">

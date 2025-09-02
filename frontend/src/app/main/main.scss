@@ -35,16 +35,6 @@
     animation: spin 1s linear infinite;
 }
 
-@keyframes spin {
-    0% {
-        transform: rotate(0deg);
-    }
-
-    100% {
-        transform: rotate(360deg);
-    }
-}
-
 .error-message {
     width: 1045px;
     background: linear-gradient(135deg, #fffafb 0%, #fff5f7 100%);
@@ -226,16 +216,4 @@
     color: #ff9dbb;
     margin: 0;
     font-weight: 500;
-}
-
-@keyframes fadeInUp {
-    from {
-        opacity: 0;
-        transform: translateY(20px);
-    }
-
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
 }
