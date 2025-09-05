@@ -11,6 +11,9 @@ import { HttpClientModule } from '@angular/common/http';
 import { Page } from './page/page';
 import { NewsPage } from './news-page/news-page';
 import { SeriesPage } from './series-page/series-page';
+import { Kdrama } from './kdrama/kdrama';
+import { Anime } from './anime/anime';
+import { NewMovies } from './new-movies/new-movies';
 
 @NgModule({
   declarations: [
@@ -20,7 +23,10 @@ import { SeriesPage } from './series-page/series-page';
     Main,
     Page,
     NewsPage,
-    SeriesPage
+    SeriesPage,
+    Kdrama,
+    Anime,
+    NewMovies,
   ],
   imports: [
     BrowserModule,

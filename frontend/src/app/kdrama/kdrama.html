@@ -2,40 +2,40 @@
     <div class="movie-soft-card">
         <div class="movie-soft-top">
             <div class="soft-poster-wrapper">
-                <img [src]="getPosterUrl(series?.poster)"
+                <img [src]="getPosterUrl(kdrama?.poster)"
                     class="soft-poster">
-                <div class="soft-movie-rating">{{ series?.rating }}</div>
+                <div class="soft-movie-rating">{{ kdrama?.rating }}</div>
             </div>
-
+            
             <div class="soft-main-info">
                 <div class="soft-title-container">
-                    <h1 class="soft-title">{{ series?.title }}</h1>
+                    <h1 class="soft-title">{{ kdrama?.title }}</h1>
                 </div>
 
                 <div class="soft-details-grid">
                     <div class="soft-detail-item">
-                        <span class="soft-detail-label">Режиссёр:</span>
-                        <span class="soft-detail-value">{{ series?.director?.join(', ') }}</span>
+                        <span class="soft-detail-label">Год:</span>
+                        <span class="soft-detail-value">{{ kdrama?.year }}</span>
                     </div>
                     <div class="soft-detail-item">
                         <span class="soft-detail-label">Страна:</span>
-                        <span class="soft-detail-value">{{ series?.countries?.join(', ') }}</span>
+                        <span class="soft-detail-value">{{ kdrama?.countries }}</span>
+                    </div>
+                    <div class="soft-detail-item">
+                        <span class="soft-detail-label">Актеры:</span>
+                        <span class="soft-detail-value">{{ kdrama?.actors?.join(', ') }}</span>
+                    </div>
+                    <div class="soft-detail-item">
+                        <span class="soft-detail-label">Статус:</span>
+                        <span class="soft-detail-value">{{ kdrama?.status ?? 0 }}</span>
                     </div>
                     <div class="soft-detail-item">
                         <span class="soft-detail-label">Жанр:</span>
-                        <span class="soft-detail-value">{{ series?.actors?.join(', ') }}</span>
+                        <span class="soft-detail-value">{{ kdrama?.genres?.join(', ') }}</span>
                     </div>
                     <div class="soft-detail-item">
-                        <span class="soft-detail-label">Год:</span>
-                        <span class="soft-detail-value">{{ series?.year }}</span>
-                    </div>
-                    <div class="soft-detail-item">
-                        <span class="soft-detail-label">Сценарий:</span>
-                        <span class="soft-detail-value">{{ series?.author?.join(', ') }}</span>
-                    </div>
-                    <div class="soft-detail-item">
-                        <span class="soft-detail-label">Жанры:</span>
-                        <span class="soft-detail-value">{{ series?.genres?.join(', ') }}</span>
+                        <span class="soft-detail-label">Серий:</span>
+                        <span class="soft-detail-value">{{ kdrama?.episodes }}</span>
                     </div>
                 </div>
 
@@ -88,7 +88,7 @@
 
         <div class="soft-description-section">
             <h3 class="soft-section-title">Описание</h3>
-            <p class="soft-description-text">{{ series?.description }}</p>
+            <p class="soft-description-text">{{ kdrama?.description }}</p>
         </div>
 
         <div class="soft-player-section">
@@ -145,7 +145,7 @@
             </div>
 
             <div class="soft-similar-section">
-                <h3 class="soft-section-title">Похожие сериалы</h3>
+                <h3 class="soft-section-title">Похожие дорамы</h3>
                 <div class="soft-similar-grid">
                     <div class="soft-similar-item">
                         <div class="soft-similar-poster"></div>
@@ -154,12 +154,12 @@
                     </div>
                     <div class="soft-similar-item">
                         <div class="soft-similar-poster"></div>
-                        <div class="soft-similar-title">Игра престолов</div>
+                        <div class="soft-similar-title">Игра в кальмара</div>
                         <div class="soft-similar-rating">9.2</div>
                     </div>
                     <div class="soft-similar-item">
                         <div class="soft-similar-poster"></div>
-                        <div class="soft-similar-title">Черное зеркало</div>
+                        <div class="soft-similar-title">Слава</div>
                         <div class="soft-similar-rating">8.8</div>
                     </div>
                 </div>
@@ -179,7 +179,7 @@
                         <div class="soft-comment-avatar"></div>
                         <div class="soft-comment-content">
                             <div class="soft-comment-author">Алексей Петров</div>
-                            <div class="soft-comment-text">Отличный сериал! Смотрел уже три раза, и каждый раз нахожу
+                            <div class="soft-comment-text">Отличная дорама! Смотрел уже три раза, и каждый раз нахожу
                                 что-то
                                 новое.</div>
                             <div class="soft-comment-meta">2 часа назад • Оценка: 9/10</div>
@@ -189,7 +189,7 @@
                         <div class="soft-comment-avatar"></div>
                         <div class="soft-comment-content">
                             <div class="soft-comment-author">Мария Иванова</div>
-                            <div class="soft-comment-text">Визуальные эффекты просто потрясающие, но сюжет немного
+                            <div class="soft-comment-text">Актерская игра просто потрясающая, но сюжет немного
                                 предсказуем.</div>
                             <div class="soft-comment-meta">5 часов назад • Оценка: 7/10</div>
                         </div>
@@ -198,3 +198,4 @@
             </div>
         </div>
     </div>
+</div>

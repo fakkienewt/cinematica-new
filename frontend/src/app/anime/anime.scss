@@ -1,19 +1,28 @@
-.soft-movie-page {
-    width: 1055px;
+.soft-anime-page {
+    width: 1095px;
+    max-width: 100%;
     padding: 20px;
+    margin: 0 auto;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     background-color: #fafafa;
-    margin: 0 auto;
+    box-sizing: border-box;
     border-radius: 20px;
 }
 
-.movie-soft-card {
+.anime-soft-card {
     background: white;
     border-radius: 12px;
     padding: 25px;
     margin-bottom: 25px;
     box-shadow: 0 2px 12px rgba(255, 182, 193, 0.1);
     border: 1px solid #FFE4E9;
+}
+
+.anime-soft-top {
+    display: flex;
+    gap: 30px;
+    align-items: flex-start;
+    margin-bottom: 25px;
 }
 
 .soft-poster-wrapper {
@@ -24,13 +33,6 @@
     overflow: hidden;
     border: 1px solid #FFE4E9;
     box-shadow: 0 4px 12px rgba(255, 182, 193, 0.15);
-}
-
-.soft-poster {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    background: linear-gradient(135deg, #FFF0F5 0%, #FFE4E9 100%);
 }
 
 .soft-movie-rating {
@@ -48,11 +50,15 @@
     z-index: 2;
 }
 
-.movie-soft-top {
-    display: flex;
-    gap: 30px;
-    align-items: flex-start;
-    margin-bottom: 25px;
+.soft-poster {
+    width: 100%;
+    height: 100%;
+    border-radius: 10px;
+    border: 1px solid #FFE4E9;
+    box-shadow: 0 4px 12px rgba(255, 182, 193, 0.15);
+    object-fit: cover;
+    background: linear-gradient(135deg, #FFF0F5 0%, #FFE4E9 100%);
+    flex-shrink: 0;
 }
 
 .soft-main-info {
@@ -82,6 +88,7 @@
     padding: 20px;
     border-radius: 10px;
     border: 1px solid #FFE4E9;
+    margin-bottom: 15px;
 }
 
 .soft-detail-item {
@@ -121,8 +128,6 @@
     gap: 12px;
     align-items: center;
     flex-wrap: wrap;
-    margin-top: 20px;
-    margin-bottom: 20px;
 }
 
 .soft-watch-btn {
@@ -245,6 +250,7 @@
     border-radius: 10px;
     border: 1px solid #FFE4E9;
     margin-bottom: 25px;
+    overflow: hidden;
 }
 
 .soft-video-placeholder {
@@ -267,6 +273,7 @@
     color: #8B5D6D;
     font-size: 1rem;
     font-weight: 500;
+    margin: 0;
 }
 
 .soft-similar-section {
@@ -345,6 +352,7 @@
     resize: vertical;
     margin-bottom: 10px;
     font-family: inherit;
+    box-sizing: border-box;
 }
 
 .soft-comment-submit {
@@ -378,6 +386,10 @@
     border-radius: 50%;
     background: linear-gradient(135deg, #FFF0F5 0%, #FFE4E9 100%);
     flex-shrink: 0;
+}
+
+.soft-comment-content {
+    flex: 1;
 }
 
 .soft-comment-author {

@@ -8,9 +8,9 @@ export interface Movie {
     description: string;
     genres: string[];
     countries: string[];
-    director: string[];
-    actors: string[];
-    time: string;
-    premiere: string;
-    script: string[];
+    time?: string;
+    premiere?: string;
+    actors?: string[];
+    director?: string[];
+    author?: string[];
 }

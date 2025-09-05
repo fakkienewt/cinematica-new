@@ -7,12 +7,10 @@ export interface Series {
     year: string;
     description: string;
     genres: string[];
-    countries: string[];
-    director: string[];
-    actors: string[];
-    time: string;
     premiere: string;
     episodes: number;
-    seasons: number;
-    script: string[];
+    countries: string[];
+    actors?: string[];
+    director?: string[];
+    author?: string[];
 }

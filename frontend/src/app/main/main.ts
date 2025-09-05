@@ -3,6 +3,8 @@ import { Movie } from './movie.model';
 import { Service } from '../services/service';
 import { Router } from '@angular/router';
 import { News } from '../models/news.model';
+import { KdramaModel } from '../models/kdrama.model';
+import { AnimeModel } from '../models/anime.model';
 
 @Component({
   selector: 'app-main',
@@ -11,16 +13,21 @@ import { News } from '../models/news.model';
   styleUrl: './main.scss'
 })
 export class Main implements OnInit {
-  movies: Movie[] = [];
   films: Movie[] = [];
   seriesList: Movie[] = [];
-  cartoons: Movie[] = [];
-  anime: Movie[] = [];
+  kdrama: KdramaModel[] = [];
+  anime: AnimeModel[] = [];
   news: News[] = [];
 
   error = false;
   loading = true;
   activeTab: string = 'films';
+
+  loadingFilms = true;
+  loadingSeries = true;
+  loadingKdrama = true;
+  loadingAnime = true;
+  loadingNews = true;
 
   constructor(
     private filmService: Service,
@@ -28,7 +35,6 @@ export class Main implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.loadMovies();
     this.setActiveTab('films');
   }
 
@@ -43,35 +49,31 @@ export class Main implements OnInit {
 
     switch (category) {
       case 'films':
-        this.loadFilms();
+        if (this.films.length === 0) {
+          this.loadFilms();
+        }
         break;
       case 'series':
-        this.loadSeries();
+        if (this.seriesList.length === 0) {
+          this.loadSeries();
+        }
         break;
-      case 'cartoons':
-        this.loadCartoons();
+      case 'kdrama':
+        if (this.kdrama.length === 0) {
+          this.loadKdrama();
+        }
         break;
       case 'anime':
-        this.loadAnime();
+        if (this.anime.length === 0) {
+          this.loadAnime();
+        }
         break;
       case 'news':
-        this.loadNews();
+        if (this.news.length === 0) {
+          this.loadNews();
+        }
         break;
     }
-  }
-
-  loadMovies(): void {
-    this.filmService.getNewMovies().subscribe({
-      next: (data: Movie[]) => {
-        this.movies = data;
-        this.loading = false;
-      },
-      error: (error: any) => {
-        console.log('Ошибка:', error);
-        this.loading = false;
-        this.error = true;
-      }
-    });
   }
 
   loadFilms(): void {
@@ -79,6 +81,7 @@ export class Main implements OnInit {
       next: (data: Movie[]) => {
         this.films = data;
         this.loading = false;
+        this.loadingFilms = false;
       },
       error: (error: any) => {
         console.log('Ошибка:', error);
@@ -93,6 +96,7 @@ export class Main implements OnInit {
       next: (data: Movie[]) => {
         this.seriesList = data;
         this.loading = false;
+        this.loadingSeries = false;
       },
       error: (error: any) => {
         console.log('Ошибка:', error);
@@ -102,11 +106,12 @@ export class Main implements OnInit {
     });
   }
 
-  loadCartoons(): void {
-    this.filmService.getCartoons().subscribe({
-      next: (data: Movie[]) => {
-        this.cartoons = data;
+  loadKdrama(): void {
+    this.filmService.getKdrama().subscribe({
+      next: (data: KdramaModel[]) => {
+        this.kdrama = data;
         this.loading = false;
+        this.loadingKdrama = false;
       },
       error: (error: any) => {
         console.log('Ошибка:', error);
@@ -118,9 +123,10 @@ export class Main implements OnInit {
 
   loadAnime(): void {
     this.filmService.getAnime().subscribe({
-      next: (data: Movie[]) => {
+      next: (data: AnimeModel[]) => {
         this.anime = data;
         this.loading = false;
+        this.loadingAnime = false;
       },
       error: (error: any) => {
         console.log('Ошибка:', error);
@@ -134,7 +140,8 @@ export class Main implements OnInit {
     this.filmService.getNews().subscribe({
       next: (data: News[]) => {
         this.news = data;
-        this.loading = false;;
+        this.loading = false;
+        this.loadingNews = false;
       },
       error: (error: any) => {
         console.log('Ошибка:', error);
@@ -144,22 +151,10 @@ export class Main implements OnInit {
     });
   }
 
-  getPosterUrl(poster: string): string {
-    if (!poster) return '/assets/default-poster.jpg';
-    const match = poster.match(/url\(["']?(.*?)["']?\)/);
-    return match ? match[1] : '/assets/default-poster.jpg';
-  }
-
   getPosterUrlFilm(poster: string): string {
     if (!poster) return '/assets/default-poster.jpg';
     const cleanPoster = poster.split(',')[0].trim();
     return cleanPoster.startsWith('http') ? cleanPoster : '/assets/default-poster.jpg';
-  }
-
-  onClickPage(movie: Movie) {
-    this.router.navigate([`movie/${movie.index}`], {
-      state: { movie: movie }
-    });
   }
 
   onClickPageFilm(film: Movie) {
@@ -174,19 +169,19 @@ export class Main implements OnInit {
     });
   }
 
-  onClickPageCartoons(cartoon: Movie) {
-    this.router.navigate([`cartoons/${cartoon.index}`], {
-      state: { movie: cartoon }
+  onClickPageKdrama(kdrama: KdramaModel) {
+    this.router.navigate([`kdrama/${kdrama.id}`], {
+      state: { kdrama: kdrama }
     });
   }
-  onClickPageAnime(anime: Movie) {
-    this.router.navigate([`anime/${anime.index}`], {
-      state: { movie: anime }
+  onClickPageAnime(anime: AnimeModel) {
+    this.router.navigate([`anime/${anime.id}`], {
+      state: { anime: anime }
     });
   }
   onClickPageNews(n: News) {
     this.router.navigate([`news/${n.id}`], {
-      state: { news: n}
+      state: { news: n }
     });
   }
 }

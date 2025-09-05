@@ -3,6 +3,9 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Movie } from '../main/movie.model';
 import { News } from '../models/news.model';
+import { KdramaModel } from '../models/kdrama.model';
+import { AnimeModel } from '../models/anime.model';
+
 @Injectable({
     providedIn: 'root'
 })
@@ -23,15 +26,15 @@ export class Service {
         return this.http.get<Movie[]>(`${this.baseUrl}/series`);
     }
 
-    getCartoons(): Observable<Movie[]> {
-        return this.http.get<Movie[]>(`${this.baseUrl}/cartoons`);
+    getKdrama(): Observable<KdramaModel[]> {
+        return this.http.get<KdramaModel[]>(`${this.baseUrl}/kdrama`);
     }
 
-    getAnime(): Observable<Movie[]> {
-        return this.http.get<Movie[]>(`${this.baseUrl}/anime`);
+    getAnime(): Observable<AnimeModel[]> {
+        return this.http.get<AnimeModel[]>(`${this.baseUrl}/anime`);
     }
 
     getNews(): Observable<News[]> {
-        return this.http.get<News[]>(`${this.baseUrl}/news`)
+        return this.http.get<News[]>(`${this.baseUrl}/news`);
     }
 }

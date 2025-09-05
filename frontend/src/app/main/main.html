@@ -1,34 +1,4 @@
-<div class="new-label">НОВИНКИ</div>
-
-<div *ngIf="loading"
-    class="loading">
-    <div class="loading-spinner"></div>
-</div>
-
-<div *ngIf="error"
-    class="error-message">
-    Не удалось загрузить фильмы
-</div>
-
-<section class="cute-horizontal-movies"
-    *ngIf="!loading && !error">
-    <div class="horizontal-scroll">
-        <div *ngFor="let movie of movies"
-            class="movie-card-horizontal">
-            <div class="poster-wrapper"
-                (click)="onClickPage(movie)">
-                <img [src]="getPosterUrl(movie.poster)"
-                    [alt]="movie.title"
-                    class="poster-image">
-                <div class="movie-rating">{{ movie.rating }}</div>
-            </div>
-            <div class="movie-info">
-                <p class="movie-year">{{ movie.year }}</p>
-            </div>
-        </div>
-    </div>
-</section>
-
+<app-new-movies></app-new-movies>
 <div class="cute-tabs">
     <div class="tabs-scroll">
         <div class="left-tabs">
@@ -39,8 +9,8 @@
                 [class.active]="activeTab === 'series'"
                 (click)="setActiveTab('series')">Сериалы</div>
             <div class="tab-item"
-                [class.active]="activeTab === 'cartoons'"
-                (click)="setActiveTab('cartoons')">Мультфильмы</div>
+                [class.active]="activeTab === 'kdrama'"
+                (click)="setActiveTab('kdrama')">Дорамы</div>
             <div class="tab-item"
                 [class.active]="activeTab === 'anime'"
                 (click)="setActiveTab('anime')">Аниме</div>
@@ -54,96 +24,170 @@
 </div>
 
 <section class="cute-vertical-movies"
-    *ngIf="!loading && !error && activeTab === 'films'">
+    *ngIf="activeTab === 'films'">
     <div class="vertical-grid">
-        <div *ngFor="let film of films"
-            class="movie-card-vertical">
-            <div class="poster-wrapper"
-                (click)="onClickPageFilm(film)">
-                <img [src]="getPosterUrlFilm(film.poster)"
-                    [alt]="film.title"
-                    class="poster-image">
-                <div class="movie-rating">{{ film.rating }}</div>
+        <ng-container *ngIf="loadingFilms">
+            <div *ngFor="let i of [1,2,3,4,5,6,7,8,9,10,11,12]"
+                class="movie-card-vertical empty">
+                <div class="poster-wrapper">
+                    <div class="empty-poster"></div>
+                </div>
+                <div class="movie-info">
+                    <div class="empty-title"></div>
+                    <div class="empty-year"></div>
+                </div>
             </div>
-            <div class="movie-info">
-                <h3 class="movie-title">{{ film.title }}</h3>
-                <p class="movie-year">{{ film.year }}</p>
+        </ng-container>
+
+        <ng-container *ngIf="!loadingFilms">
+            <div *ngFor="let film of films"
+                class="movie-card-vertical">
+                <div class="poster-wrapper"
+                    (click)="onClickPageFilm(film)">
+                    <img [src]="getPosterUrlFilm(film.poster)"
+                        class="poster-image">
+                    <div class="movie-rating">{{ film.rating }}</div>
+                </div>
+                <div class="movie-info">
+                    <h3 class="movie-title">{{ film.title }}</h3>
+                    <p class="movie-year">{{ film.year }}</p>
+                </div>
             </div>
-        </div>
+        </ng-container>
     </div>
 </section>
 
 <section class="cute-vertical-movies"
-    *ngIf="!loading && !error && activeTab === 'series'">
+    *ngIf="activeTab === 'series'">
     <div class="vertical-grid">
-        <div *ngFor="let series of seriesList"
-            class="movie-card-vertical">
-            <div class="poster-wrapper"
-                (click)="onClickPageSeries(series)">
-                <img [src]="getPosterUrlFilm(series.poster)"
-                    class="poster-image">
-                <div class="movie-rating">{{ series.rating }}</div>
+        <ng-container *ngIf="loadingSeries">
+            <div *ngFor="let i of [1,2,3,4,5,6,7,8,9,10,11,12]"
+                class="movie-card-vertical empty">
+                <div class="poster-wrapper">
+                    <div class="empty-poster"></div>
+                </div>
+                <div class="movie-info">
+                    <div class="empty-title"></div>
+                    <div class="empty-year"></div>
+                </div>
             </div>
-            <div class="movie-info">
-                <h3 class="movie-title">{{ series.title }}</h3>
-                <p class="movie-year">{{ series.year }}</p>
+        </ng-container>
+
+        <ng-container *ngIf="!loadingSeries">
+            <div *ngFor="let series of seriesList"
+                class="movie-card-vertical">
+                <div class="poster-wrapper"
+                    (click)="onClickPageSeries(series)">
+                    <img [src]="getPosterUrlFilm(series.poster)"
+                        class="poster-image">
+                    <div class="movie-rating">{{ series.rating }}</div>
+                </div>
+                <div class="movie-info">
+                    <h3 class="movie-title">{{ series.title }}</h3>
+                    <p class="movie-year">{{ series.year }}</p>
+                </div>
             </div>
-        </div>
+        </ng-container>
     </div>
 </section>
 
 <section class="cute-vertical-movies"
-    *ngIf="!loading && !error && activeTab === 'cartoons'">
+    *ngIf="activeTab === 'kdrama'">
     <div class="vertical-grid">
-        <div *ngFor="let cartoon of cartoons"
-            class="movie-card-vertical">
-            <div class="poster-wrapper"
-                (click)="onClickPageCartoons(cartoon)">
-                <img [src]="getPosterUrlFilm(cartoon.poster)"
-                    [alt]="cartoon.title"
-                    class="poster-image">
-                <div class="movie-rating">{{ cartoon.rating }}</div>
+        <ng-container *ngIf="loadingKdrama">
+            <div *ngFor="let i of [1,2,3,4,5,6,7,8,9,10,11,12]"
+                class="movie-card-vertical empty">
+                <div class="poster-wrapper">
+                    <div class="empty-poster"></div>
+                </div>
+                <div class="movie-info">
+                    <div class="empty-title"></div>
+                    <div class="empty-year"></div>
+                </div>
             </div>
-            <div class="movie-info">
-                <h3 class="movie-title">{{ cartoon.title }}</h3>
-                <p class="movie-year">{{ cartoon.year }}</p>
+        </ng-container>
+
+        <ng-container *ngIf="!loadingKdrama">
+            <div *ngFor="let k of kdrama"
+                class="movie-card-vertical">
+                <div class="poster-wrapper"
+                    (click)="onClickPageKdrama(k)">
+                    <img [src]="getPosterUrlFilm(k.poster)"
+                        class="poster-image">
+                    <div class="movie-rating">{{ k.rating }}</div>
+                </div>
+                <div class="movie-info">
+                    <h3 class="movie-title">{{ k.title }}</h3>
+                    <p class="movie-year">{{ k.year }}</p>
+                </div>
             </div>
-        </div>
+        </ng-container>
     </div>
 </section>
 
 <section class="cute-vertical-movies"
-    *ngIf="!loading && !error && activeTab === 'anime'">
+    *ngIf="activeTab === 'anime'">
     <div class="vertical-grid">
-        <div *ngFor="let animeItem of anime"
-            class="movie-card-vertical">
-            <div class="poster-wrapper"
-                (click)="onClickPageAnime(animeItem)">
-                <img [src]="getPosterUrlFilm(animeItem.poster)"
-                    class="poster-image">
-                <div class="movie-rating">{{ animeItem.rating }}</div>
+        <ng-container *ngIf="loadingAnime">
+            <div *ngFor="let i of [1,2,3,4,5,6,7,8,9,10,11,12]"
+                class="movie-card-vertical empty">
+                <div class="poster-wrapper">
+                    <div class="empty-poster"></div>
+                </div>
+                <div class="movie-info">
+                    <div class="empty-title"></div>
+                    <div class="empty-year"></div>
+                </div>
             </div>
-            <div class="movie-info">
-                <h3 class="movie-title">{{ animeItem.title }}</h3>
-                <p class="movie-year">{{ animeItem.year }}</p>
+        </ng-container>
+
+        <ng-container *ngIf="!loadingAnime">
+            <div *ngFor="let animeItem of anime"
+                class="movie-card-vertical">
+                <div class="poster-wrapper"
+                    (click)="onClickPageAnime(animeItem)">
+                    <img [src]="getPosterUrlFilm(animeItem.poster)"
+                        class="poster-image">
+                    <div class="movie-rating">{{ animeItem.rating }}</div>
+                </div>
+                <div class="movie-info">
+                    <h3 class="movie-title">{{ animeItem.title }}</h3>
+                    <p class="movie-year">{{ animeItem.year }}</p>
+                </div>
             </div>
-        </div>
+        </ng-container>
     </div>
 </section>
 
 <section class="cute-news"
-    *ngIf="!loading && !error && activeTab === 'news'">
+    *ngIf="activeTab === 'news'">
     <div class="news-grid">
-        <div *ngFor="let n of news"
-            class="news-card">
-            <div class="news-poster-wrapper" (click)="onClickPageNews(n)">
-                <img [src]="getPosterUrlFilm(n.poster)"
-                    class="news-poster-image">
+        <ng-container *ngIf="loadingNews">
+            <div *ngFor="let i of [1,2,3,4,5,6]"
+                class="news-card empty">
+                <div class="news-poster-wrapper">
+                    <div class="empty-poster"></div>
+                </div>
+                <div class="news-info">
+                    <div class="empty-title"></div>
+                    <div class="empty-date"></div>
+                </div>
             </div>
-            <div class="news-info">
-                <h3 class="news-title">{{ n.title }}</h3>
-                <p class="news-date">{{ n.when }}</p>
+        </ng-container>
+
+        <ng-container *ngIf="!loadingNews">
+            <div *ngFor="let n of news"
+                class="news-card">
+                <div class="news-poster-wrapper"
+                    (click)="onClickPageNews(n)">
+                    <img [src]="getPosterUrlFilm(n.poster)"
+                        class="news-poster-image">
+                </div>
+                <div class="news-info">
+                    <h3 class="news-title">{{ n.title }}</h3>
+                    <p class="news-date">{{ n.when }}</p>
+                </div>
             </div>
-        </div>
+        </ng-container>
     </div>
 </section>

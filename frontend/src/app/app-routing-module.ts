@@ -4,6 +4,8 @@ import { Main } from './main/main';
 import { Page } from './page/page';
 import { NewsPage } from './news-page/news-page';
 import { SeriesPage } from './series-page/series-page';
+import { Kdrama } from './kdrama/kdrama';
+import { Anime } from './anime/anime';
 
 const routes: Routes = [
 
@@ -15,11 +17,11 @@ const routes: Routes = [
 
   { path: 'series/:index', component: SeriesPage},
 
-  { path: 'cartoons/:index', component: Page},
+  { path: 'anime/:id', component: Anime},
 
-  { path: 'anime/:index', component: Page},
+  { path: 'news/:id', component: NewsPage},
 
-  { path: 'news/:id', component: NewsPage}
+  { path: 'kdrama/:id', component: Kdrama }
 
 ];
 

@@ -13,11 +13,12 @@ app.use(express.json());
 
 const axiosConfig = {
     headers: {
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
         'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
-        'Accept-Language': 'ru-RU,ru;q=0.9,en-US;q=0.8,en;q=0.7',
+        'Accept-Language': 'ru-RU,ru;q=0.8,en-US;q=0.5,en;q=0.3',
         'Accept-Encoding': 'gzip, deflate, br',
-        'Connection': 'keep-alive'
+        'Connection': 'keep-alive',
+        'Upgrade-Insecure-Requests': '1',
     }
 };
 
@@ -38,7 +39,7 @@ async function parseNewMovies() {
         const $ = cheerio.load(response.data);
         const movies = [];
 
-        const items = $('.popularMovies .item').slice(0, 6);
+        const items = $('.popularMovies .item').slice(0, 4);
 
         for (let i = 0; i < items.length; i++) {
             const element = items[i];
@@ -57,11 +58,11 @@ async function parseNewMovies() {
             let description = '';
             let genres = [];
             let countries = [];
-            let director = [];
-            let actors = [];
             let time = '';
             let premiere = '';
-            let script = [];
+            let director = [];
+            let actors = [];
+            let author = [];
 
             if (movieUrl) {
                 try {
@@ -89,15 +90,6 @@ async function parseNewMovies() {
                         }
                     });
 
-                    director = desc$('.entity-desc-item:contains("Режиссёр") + .entity-desc-value span[itemprop="name"]')
-                        .map((i, el) => desc$(el).text().trim())
-                        .get();
-
-                    actors = desc$('.entity-desc-item:contains("Актёры") + .entity-desc-value span[itemprop="name"]')
-                        .slice(0, 5)
-                        .map((i, el) => desc$(el).text().trim())
-                        .get();
-
                     time = desc$('.entity-desc-item:contains("Время") + .entity-desc-value time').text().trim();
 
                     const premiereBlock = desc$('.entity-desc-item:contains("Премьера") + .entity-desc-value');
@@ -106,9 +98,21 @@ async function parseNewMovies() {
                         premiere = worldPremiere.split('в мире')[0].trim();
                     }
 
-                    script = desc$('.js-scenarist span[itemprop="name"]')
-                        .map((i, el) => desc$(el).text().trim())
-                        .get();
+                    director = [];
+                    desc$('.entity-desc-item:contains("Режиссёр") + .entity-desc-value [itemprop="director"] [itemprop="name"]').each((index, el) => {
+                        director.push(desc$(el).text().trim());
+                    });
+
+
+                    actors = [];
+                    desc$('.entity-desc-item:contains("Актёры") + .entity-desc-value [itemprop="actor"] [itemprop="name"]').slice(0, 3).each((index, el) => {
+                        actors.push(desc$(el).text().trim());
+                    });
+
+                    author = [];
+                    desc$('.entity-desc-item:contains("Сценарий") + .entity-desc-value [itemprop="author"] [itemprop="name"]').each((index, el) => {
+                        author.push(desc$(el).text().trim());
+                    });
 
                 } catch (error) {
                     console.log('Ошибка:', error.message);
@@ -125,11 +129,11 @@ async function parseNewMovies() {
                 description: description,
                 genres: genres,
                 countries: countries,
-                director: director,
-                actors: actors,
                 time: time,
                 premiere: premiere,
-                script: script
+                director: director,
+                actors: actors,
+                author: author
             });
         }
 
@@ -143,12 +147,12 @@ async function parseNewMovies() {
 
 async function parseOnlyFilms() {
     try {
-        const url = 'https://w140.zona.plus/movies';
+        const url = 'https://w140.zona.plus/movies?page=8';
         const response = await axios.get(url, axiosConfig);
         const $ = cheerio.load(response.data);
         const films = [];
 
-        const items = $('.results-item-wrap').slice(0, 28);
+        const items = $('.results-item-wrap').slice(0, 37);
 
         for (let i = 0; i < items.length; i++) {
             const element = items[i];
@@ -176,11 +180,11 @@ async function parseOnlyFilms() {
             let description = '';
             let genres = [];
             let countries = [];
-            let director = [];
-            let actors = [];
             let time = '';
             let premiere = '';
-            let script = [];
+            let director = [];
+            let actors = [];
+            let author = [];
 
             if (url) {
                 try {
@@ -207,26 +211,30 @@ async function parseOnlyFilms() {
                                 .get();
                         }
                     });
-                    director = desc$('.entity-desc-item:contains("Режиссёр") + .entity-desc-value span[itemprop="name"]')
-                        .map((i, el) => desc$(el).text().trim())
-                        .get();
-
-                    actors = desc$('.entity-desc-item:contains("Актёры") + .entity-desc-value span[itemprop="name"]')
-                        .slice(0, 5)
-                        .map((i, el) => desc$(el).text().trim())
-                        .get();
 
                     time = desc$('.entity-desc-item:contains("Время") + .entity-desc-value time').text().trim();
+
+                    director = [];
+                    desc$('.entity-desc-item:contains("Режиссёр") + .entity-desc-value [itemprop="director"] [itemprop="name"]').each((index, el) => {
+                        director.push(desc$(el).text().trim());
+                    });
+
+
+                    actors = [];
+                    desc$('.entity-desc-item:contains("Актёры") + .entity-desc-value [itemprop="actor"] [itemprop="name"]').slice(0, 3).each((index, el) => {
+                        actors.push(desc$(el).text().trim());
+                    });
+
+                    author = [];
+                    desc$('.entity-desc-item:contains("Сценарий") + .entity-desc-value [itemprop="author"] [itemprop="name"]').slice(0, 3).each((index, el) => {
+                        author.push(desc$(el).text().trim());
+                    });
 
                     const premiereBlock = desc$('.entity-desc-item:contains("Премьера") + .entity-desc-value');
                     if (premiereBlock.length) {
                         const worldPremiere = premiereBlock.find('span').first().text().trim();
                         premiere = worldPremiere.split('в мире')[0].trim();
                     }
-
-                    script = desc$('.js-scenarist span[itemprop="name"]')
-                        .map((i, el) => desc$(el).text().trim())
-                        .get();
 
                 } catch (error) {
                     console.log('Ошибка:', error.message);
@@ -243,11 +251,11 @@ async function parseOnlyFilms() {
                 description: description,
                 genres: genres,
                 countries: countries,
-                director: director,
-                actors: actors,
                 time: time,
                 premiere: premiere,
-                script: script
+                director: director,
+                actors: actors,
+                author: author
             });
         }
 
@@ -267,7 +275,7 @@ async function parseSeries() {
 
         const series = [];
 
-        const items = $('.results-item-wrap').slice(0, 28);
+        const items = $('.results-item-wrap').slice(0, 38);
 
         for (let i = 0; i < items.length; i++) {
             const element = items[i];
@@ -292,13 +300,12 @@ async function parseSeries() {
             let description = '';
             let genres = [];
             let countries = [];
-            let director = [];
-            let actors = [];
             let time = '';
             let premiere = '';
             let episodes = 0;
-            let seasons = 0;
-            let script = [];
+            let director = [];
+            let actors = [];
+            let author = [];
 
             if (url) {
                 try {
@@ -326,21 +333,6 @@ async function parseSeries() {
                         }
                     });
 
-                    director = desc$('.entity-desc-item:contains("Режиссёр") + .entity-desc-value span[itemprop="name"]')
-                        .map((i, el) => desc$(el).text().trim())
-                        .get()
-                        .slice(0, 7);
-
-                    actors = desc$('.entity-desc-item:contains("Актёры") + .entity-desc-value span[itemprop="name"]')
-                        .map((i, el) => desc$(el).text().trim())
-                        .get()
-                        .slice(0, 7);
-
-                    script = desc$('.js-scenarist span[itemprop="name"]')
-                        .map((i, el) => desc$(el).text().trim())
-                        .get()
-                        .slice(0, 7);
-
                     time = desc$('.entity-desc-item:contains("Время") + .entity-desc-value time').text().trim();
 
                     const premiereBlock = desc$('.entity-desc-item:contains("Премьера") + .entity-desc-value');
@@ -349,17 +341,23 @@ async function parseSeries() {
                         premiere = worldPremiere.split('в мире')[0].trim();
                     }
 
-                    seasons = desc$('.entity-season.js-entity-season').length;
-
-                    if (seasons === 0) {
-                        seasons = 1;
-                    }
-
                     episodes = desc$('.items.episodes.is-entity-page .item').length;
 
-                    if (episodes === 0) {
-                        episodes = desc$('.items.episodes .item').length;
-                    }
+                    director = [];
+                    desc$('.entity-desc-item:contains("Режиссёр") + .entity-desc-value [itemprop="director"] [itemprop="name"]').slice(0, 3).each((index, el) => {
+                        director.push(desc$(el).text().trim());
+                    });
+
+                    actors = [];
+                    desc$('.entity-desc-item:contains("Актёры") + .entity-desc-value [itemprop="actor"] [itemprop="name"]').slice(0, 3).each((index, el) => {
+                        actors.push(desc$(el).text().trim());
+                    });
+
+                    author = [];
+                    desc$('.entity-desc-item:contains("Сценарий") + .entity-desc-value [itemprop="author"] [itemprop="name"]').slice(0, 3).each((index, el) => {
+                        author.push(desc$(el).text().trim());
+                    });
+
 
                 } catch (error) {
                     console.log('Ошибка:', error.message);
@@ -376,13 +374,12 @@ async function parseSeries() {
                 description: description,
                 genres: genres,
                 countries: countries,
-                director: director,
-                actors: actors,
                 time: time,
                 premiere: premiere,
                 episodes: episodes,
-                seasons: seasons,
-                script: script
+                director: director,
+                actors: actors,
+                author: author
             });
         }
 
@@ -394,123 +391,260 @@ async function parseSeries() {
     }
 }
 
-async function parseCatoons() {
+async function parseKdrama() {
     try {
-        const url = 'https://w140.zona.plus/tvseries/filter/genre-multfilm';
-        const response = await axios.get(url, axiosConfig);
-        const $ = cheerio.load(response.data);
+        const baseUrl = 'https://doramy.club/serialy';
+        let allitems = [];
+        let currentPage = 1;
+        const maxItems = 31;
 
-        const cartoons = [];
+        while (allitems.length < maxItems) {
+            let pageUrl;
 
-        const items = $('.results-item-wrap').slice(0, 28);
-
-        for (let i = 0; i < items.length; i++) {
-            const element = items[i];
-            const $el = $(element);
-
-            const title = $el.find('.results-item-title').text();
-            const url = $el.find('.results-item').attr('href');
-
-            const posterStyle = $el.find('.result-item-preview').css('background-image');
-            let poster = null;
-
-            if (posterStyle) {
-                const matches = posterStyle.match(/url\(['"]?(.*?)['"]?\)/);
-                if (matches && matches[1]) {
-                    poster = matches[1].split(',')[0].trim();
-                }
-            }
-            const rating = $el.find('.results-item-rating span').text();
-            const year = $el.find('.results-item-year').text();
-
-            let description = '';
-            let genres = [];
-            let countries = [];
-
-            if (url) {
-                try {
-                    const fullUrl = `https://w140.zona.plus${url}`;
-                    const descResponse = await axios.get(fullUrl, axiosConfig);
-                    const desc$ = cheerio.load(descResponse.data);
-
-                    description = desc$('.pb-3').text().trim();
-
-                    desc$('.entity-desc-item-wrap').each((index, item) => {
-                        const $item = desc$(item);
-                        const label = $item.find('.entity-desc-item').text().trim();
-
-                        if (label === 'Жанры') {
-                            genres = $item.find('.entity-desc-link-u')
-                                .map((i, el) => desc$(el).text().trim())
-                                .get();
-                        }
-
-                        if (label === 'Страна' || label === 'Страны') {
-                            countries = $item.find('.entity-desc-link-u')
-                                .map((i, el) => desc$(el).text().trim())
-                                .get();
-                        }
-                    });
-
-                } catch (error) {
-                    console.log('Ошибка:', error.message);
-                }
+            if (currentPage === 1) {
+                pageUrl = baseUrl;
+            } else {
+                pageUrl = `${baseUrl}/page/${currentPage}`;
             }
 
-            cartoons.push({
-                index: i,
-                poster: poster,
-                url: url ? `https://w140.zona.plus${url}` : null,
-                title: title,
-                rating: rating,
-                year: year,
-                description: description,
-                genres: genres,
-                countries: countries
-            });
+            const response = await axios.get(pageUrl, axiosConfig);
+            const $ = cheerio.load(response.data);
+
+            const items = $('.post-list');
+
+            for (let i = 0; i < items.length; i++) {
+
+                const element = items[i];
+                const $el = $(element);
+
+                const title = $el.find('.img-link a').attr('title') ||
+                    $el.find('.img-link span').text().trim();
+
+                const url = $el.find('a').attr('href');
+                const poster = $el.find('img').attr('src');
+
+                const yearCountryElements = $el.find('u');
+                let year = '';
+
+                if (yearCountryElements.length >= 1) {
+                    const firstUContent = yearCountryElements.first().text();
+                    const parts = firstUContent.split(', ');
+                    if (parts.length > 0) {
+                        year = parts[parts.length - 1];
+                        countries = parts.slice(0, -1);
+                    }
+                }
+
+                let genres = [];
+                if (yearCountryElements.length >= 2) {
+                    genres = yearCountryElements.last().text().split(', ').filter(Boolean);
+                }
+
+                const episodesText = $el.find('span.i1').parent().text();
+                const episodesMatch = episodesText.match(/(\d+)/);
+                const episodes = episodesMatch ? parseInt(episodesMatch[1]) : 0;
+
+                let status = '';
+                let time = '';
+                let description = '';
+                let rating = '';
+                let actors = [];
+
+                if (url) {
+                    try {
+                        const fullUrl = url.startsWith('http') ? url : `https://doramy.club${url}`;
+                        const descResponse = await axios.get(fullUrl, axiosConfig);
+                        const desc$ = cheerio.load(descResponse.data);
+
+                        status = desc$('.o-sratus').text().trim() || 'Вышел';
+
+                        time = desc$('tr:contains("Время:") td:nth-child(2)').text().trim() ||
+                            desc$('td:contains("Время:") + td').text().trim();
+
+                        description = desc$('.post-singl p').first().text().trim() ||
+                            desc$('.description p').first().text().trim();
+
+                        rating = desc$('span[itemprop="ratingValue"]').text().trim() ||
+                            desc$('.rating').text().trim();
+
+                        const actorsRow = desc$('tr.person:contains("В ролях:")');
+                        if (actorsRow.length) {
+                            actorsRow.find('.tdlinks a').slice(0, 4).each((index, element) => {
+                                let actorName = desc$(element).text().trim();
+                                if (actorName.endsWith(',')) {
+                                    actorName = actorName.slice(0, -1);
+                                }
+                                if (actorName) {
+                                    actors.push(actorName);
+                                }
+                            });
+                        }
+
+                    } catch (error) {
+                        console.log('Ошибка при парсинге страницы дорамы:', error.message);
+                    }
+                }
+
+                allitems.push({
+                    id: allitems.length + 1,
+                    poster: poster,
+                    url: url ? `https://doramy.club${url}` : '',
+                    title: title,
+                    rating: rating,
+                    year: year,
+                    description: description,
+                    genres: genres,
+                    status: status,
+                    time: time,
+                    episodes: episodes,
+                    countries: countries,
+                    actors: actors
+                });
+            }
+
+            currentPage++;
+
         }
 
-        return filterRussianContent(cartoons);
+        return allitems;
 
     } catch (error) {
-        console.log(error);
+        console.log('Ошибка:', error.message);
         throw error;
     }
 }
 
 async function parseAnime() {
     try {
-        const url = 'https://animego.me/anime?sort=r.rating&direction=desc';
-        const response = await axios.get(url, axiosConfig);
-        const $ = cheerio.load(response.data);
+        const baseUrl = 'https://animevost.org/tip/tv/';
+        let allAnime = [];
+        let currentPage = 1;
+        const maxItems = 28;
 
-        const anime = [];
+        while (allAnime.length < maxItems) {
+            let pageUrl = currentPage === 1 ? baseUrl : `${baseUrl}page/${currentPage}/`;
 
-        $('.animes-list-item').each((index, element) => {
-            const $el = $(element);
+            const response = await axios.get(pageUrl, axiosConfig);
+            const $ = cheerio.load(response.data);
 
-            const title = $el.find('.h5.font-weight-normal a').text();
-            const url = 'https://animego.me' + $el.find('.h5.font-weight-normal a').attr('href');
-            const poster = $el.find('.anime-list-lazy').attr('data-original');
-            const rating = $el.find('.p-rate-flag__text').text().trim();
-            const year = $el.find('.anime-year a').text().trim();
-            const description = $el.find('.description').text();
+            const items = $('.shortstory');
 
-            anime.push({
-                id: index,
-                title: title,
-                url: url,
-                poster: poster,
-                rating: rating,
-                year: year,
-                description: description
-            });
-        });
+            for (let i = 0; i < items.length; i++) {
+                const element = items[i];
+                const $el = $(element);
 
-        return anime.slice(0, 28);
+                const titleElement = $el.find('.shortstoryHead h2 a');
+                const fullTitle = titleElement.text().trim();
+
+                let russianTitle = fullTitle;
+                if (fullTitle.includes('/')) {
+                    russianTitle = fullTitle.split('/')[0].trim();
+                }
+
+                if (!russianTitle || russianTitle.length < 2) {
+                    continue;
+                }
+
+                const url = titleElement.attr('href') || '';
+
+                let poster = $el.find('.imgRadius').attr('src') || '';
+                if (poster && !poster.startsWith('http')) {
+                    poster = `https://animevost.org${poster}`;
+                }
+
+                const ratingText = $el.find('.current-rating').css('width');
+                let rating = '0';
+                if (ratingText) {
+                    const widthValue = ratingText.replace('%', '');
+                    const widthPercent = parseInt(widthValue);
+                    if (!isNaN(widthPercent)) {
+                        rating = (widthPercent / 20).toFixed(1);
+                    }
+                }
+
+                let description = '';
+                const descElement = $el.find('p:contains("Описание:")');
+                if (descElement.length) {
+                    description = descElement.nextUntil('br, p').text().trim() ||
+                        descElement.parent().text().split('Описание:')[1]?.split('\n')[0]?.trim() || '';
+                }
+
+                const genres = [];
+                $el.find('.shortstoryFuter a[href*="zhanr"]').each((index, el) => {
+                    const genre = $(el).text().trim();
+                    if (genre) genres.push(genre);
+                });
+
+                const episodesText = $el.find('p:contains("Количество серий:")').text();
+                let episodes = 0;
+                let status = 'Завершен';
+                let director = 'Не указан';
+
+                const directorElement = $el.find('p:contains("Режиссёр:")');
+                director = directorElement.text().replace('Режиссёр:', '').trim() || 'Не указан';
+
+                if (episodesText) {
+                    const text = episodesText.replace('Количество серий:', '').trim();
+
+                    if (text.includes('из')) {
+                        const parts = text.split('из');
+                        const currentEp = parts[0].split('-')[1]?.trim();
+                        const totalEp = parts[1]?.replace('(', '').trim();
+
+                        episodes = parseInt(totalEp) || 0;
+                    }
+                    else if (text.includes('+')) {
+                        episodes = parseInt(text) || 0;
+                        status = 'Онгоинг';
+                    } else {
+                        episodes = parseInt(text) || 0;
+                    }
+                }
+
+                let time = '25 мин.';
+                if (episodesText && episodesText.includes('мин.')) {
+                    const timeMatch = episodesText.match(/\(([^)]+)\)/);
+                    if (timeMatch) {
+                        time = timeMatch[1];
+                    }
+                }
+
+                const yearText = $el.find('p:contains("Год выхода:")').text();
+                const year = yearText ? yearText.replace('Год выхода:', '').trim() : '2025';
+
+                if (fullTitle.includes('серия') || fullTitle.includes('Онгоинг')) {
+                    status = 'Онгоинг';
+                }
+
+                let id = allAnime.length + 1;
+
+                allAnime.push({
+                    id: id,
+                    poster: poster,
+                    url: url.startsWith('http') ? url : `https://animevost.org${url}`,
+                    title: russianTitle,
+                    rating: rating,
+                    description: description,
+                    genres: genres,
+                    episodes: episodes,
+                    time: time,
+                    status: status,
+                    year: year,
+                    director: director
+                });
+
+                if (allAnime.length >= maxItems) break;
+            }
+
+            currentPage++;
+
+            if (currentPage > 10) break;
+        }
+
+        return allAnime.slice(0, maxItems);
 
     } catch (error) {
-        console.log(error);
+        console.log('Ошибка:', error);
         throw error;
     }
 }
@@ -596,10 +730,10 @@ app.get('/api/series', async (req, res) => {
     }
 });
 
-app.get('/api/cartoons', async (req, res) => {
+app.get('/api/kdrama', async (req, res) => {
     try {
-        const cartoons = await parseCatoons();
-        res.json(cartoons);
+        const allitems = await parseKdrama();
+        res.json(allitems);
     } catch (error) {
         res.status(500).json({ error: 'Ошибка' });
     }
